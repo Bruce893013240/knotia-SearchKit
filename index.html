@@ -317,6 +317,28 @@
   /* ── DOWNLOAD ── */
   #download { background: var(--bg2); }
 
+  .install-steps {
+    margin-top: 1.5rem;
+    background: var(--bg); border: 1px solid var(--border2);
+    border-radius: 12px; padding: 1.25rem 1.5rem;
+    max-width: 480px;
+  }
+  .install-title {
+    font-size: .8rem; font-weight: 600; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: .75rem;
+  }
+  .install-steps ol {
+    padding-left: 1.25rem;
+    display: flex; flex-direction: column; gap: .55rem;
+  }
+  .install-steps li { font-size: .86rem; color: var(--muted); line-height: 1.6; }
+  .install-steps code {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 4px; padding: 1px 5px; font-size: .82rem; color: var(--text);
+  }
+
   .download-card {
     background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--radius); padding: 3rem;
@@ -636,6 +658,17 @@
         </p>
         <a href="https://github.com/Bruce893013240/knotia-SearchKit/releases/download/v5.0/knotia-search-v5.crx" class="btn-primary" style="width:fit-content;" download>⬇ Download Extension</a>
         <p style="font-size:.78rem; color:var(--muted); margin-top:.75rem;">v5.0 · Manifest V3 · <a href="https://github.com/Bruce893013240/knotia-SearchKit/releases" style="color:var(--accent);">Release notes</a></p>
+
+        <div class="install-steps">
+          <p class="install-title">How to install</p>
+          <ol>
+            <li>Click <strong>Download Extension</strong> above — save the <code>.crx</code> file anywhere on your computer.</li>
+            <li>Open Chrome and go to <code>chrome://extensions</code></li>
+            <li>Enable <strong>Developer mode</strong> (toggle in the top-right corner).</li>
+            <li>Drag and drop the <code>.crx</code> file onto the extensions page.</li>
+            <li>Click <strong>Add extension</strong> in the confirmation dialog.</li>
+          </ol>
+        </div>
       </div>
       <div class="dl-right">
         <div class="crx-mockup">
