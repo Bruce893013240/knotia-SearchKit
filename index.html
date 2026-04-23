@@ -89,7 +89,7 @@
 
   /* ── HERO ── */
   #hero {
-    padding-top: calc(var(--nav-h) + 37px + 5rem);
+    padding-top: calc(var(--nav-h) + var(--banner-h, 54px) + 5rem);
     padding-bottom: 5rem;
     text-align: center;
     position: relative;
@@ -534,7 +534,7 @@
 </div>
 
 <!-- NAV -->
-<nav style="top:37px;">
+<nav id="main-nav">
   <a class="nav-logo" href="#">
     <div class="logo-mark" style="font-size:11px;letter-spacing:-.02em;">KS</div>
     Knotia SearchKit
@@ -872,6 +872,18 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.1 });
 
 document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// Position nav below disclaimer banner
+function updateNavTop() {
+  const banner = document.body.firstElementChild;
+  const nav = document.getElementById('main-nav');
+  if (!banner || !nav) return;
+  const h = banner.getBoundingClientRect().height;
+  nav.style.top = h + 'px';
+  document.documentElement.style.setProperty('--banner-h', h + 'px');
+}
+updateNavTop();
+window.addEventListener('resize', updateNavTop);
 </script>
 </body>
 </html>
