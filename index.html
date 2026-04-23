@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Knotia SearchKit — Supercharge your search in Knotia with AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:      #f0f4fb;
+    --bg2:     #e6edf8;
+    --surface: #ffffff;
+    --border:  rgba(30,80,180,0.1);
+    --border2: rgba(30,80,180,0.18);
+    --text:    #0d1a33;
+    --muted:   #5a6e90;
+    --a1:      #1a5cff;   /* electric blue */
+    --a2:      #0ea5e9;   /* sky */
+    --a3:      #06b6d4;   /* cyan */
+    --grad:    linear-gradient(130deg, #1a5cff 0%, #0ea5e9 60%, #06b6d4 100%);
+    --grad-soft: linear-gradient(130deg,rgba(26,92,255,.07) 0%,rgba(6,182,212,.05) 100%);
+    --radius:  16px;
+    --radius-sm: 10px;
+    --nav-h:   64px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: var(--nav-h);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem;
+    background: rgba(240,244,251,0.88);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem; font-weight: 600;
+    text-decoration: none; color: var(--text);
+  }
+
+  .logo-mark {
+    width: 32px; height: 32px; border-radius: 9px;
+    background: var(--grad);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Sora', sans-serif;
+    font-size: 14px; font-weight: 600; color: #fff;
+    box-shadow: 0 4px 12px rgba(26,92,255,0.3);
+  }
+
+  .nav-links { display: flex; align-items: center; gap: .2rem; list-style: none; }
+  .nav-links a {
+    display: block; padding: 6px 14px;
+    text-decoration: none; color: var(--muted);
+    font-size: .88rem; font-weight: 400; border-radius: 8px;
+    transition: color .15s, background .15s;
+  }
+  .nav-links a:hover { color: var(--text); background: var(--bg2); }
+
+  .nav-cta {
+    background: var(--grad) !important; color: #fff !important;
+    font-weight: 500 !important; padding: 7px 18px !important;
+    border-radius: 99px !important;
+    box-shadow: 0 4px 14px rgba(26,92,255,0.28) !important;
+  }
+  .nav-cta:hover { opacity: .88; background: var(--grad) !important; }
+
+  /* ── SECTIONS ── */
+  section { padding: 6rem 2rem; }
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  /* ── HERO ── */
+  #hero {
+    padding-top: calc(var(--nav-h) + 37px + 5rem);
+    padding-bottom: 5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* big blurred orbs */
+  #hero::before {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(26,92,255,.13) 0%, transparent 70%);
+    top: -100px; left: 50%; transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  #hero::after {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(6,182,212,.10) 0%, transparent 70%);
+    bottom: 0; right: 10%;
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 5px 14px; border-radius: 99px;
+    border: 1px solid rgba(26,92,255,.22);
+    background: rgba(26,92,255,.07);
+    font-size: .78rem; font-weight: 500; color: var(--a1);
+    margin-bottom: 1.5rem;
+    animation: fadeUp .6s ease both;
+  }
+
+  .hero-badge .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--a1); animation: pulse 2s ease infinite;
+  }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    font-weight: 600; line-height: 1.08; letter-spacing: -.02em;
+    margin-bottom: 1.25rem;
+    animation: fadeUp .7s .1s ease both;
+  }
+
+  h1 em {
+    font-style: italic; font-weight: 400;
+    background: var(--grad);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 1.1rem; color: var(--muted); font-weight: 300;
+    max-width: 540px; margin: 0 auto 2.5rem;
+    animation: fadeUp .7s .2s ease both;
+  }
+
+  .hero-actions {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+    animation: fadeUp .7s .3s ease both;
+  }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 26px; border-radius: 99px;
+    background: var(--grad); color: #fff;
+    font-size: .93rem; font-weight: 500;
+    text-decoration: none;
+    box-shadow: 0 4px 20px rgba(26,92,255,.28);
+    transition: opacity .15s, transform .15s;
+  }
+  .btn-primary:hover { opacity: .88; transform: translateY(-1px); }
+
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 26px; border-radius: 99px;
+    background: var(--surface); border: 1px solid var(--border2);
+    color: var(--text); font-size: .93rem; font-weight: 500;
+    text-decoration: none; transition: background .15s, transform .15s;
+  }
+  .btn-secondary:hover { background: var(--bg2); transform: translateY(-1px); }
+
+  /* hero mock */
+  .hero-visual {
+    max-width: 820px; margin: 4rem auto 0;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    overflow: hidden;
+    box-shadow: 0 2px 60px rgba(26,92,255,.08);
+    animation: fadeUp .8s .4s ease both;
+  }
+
+  .visual-bar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+  }
+
+  .dot-row { display: flex; gap: 5px; }
+  .dot-row span { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-row span:nth-child(1) { background: #ff5f56; }
+  .dot-row span:nth-child(2) { background: #ffbd2e; }
+  .dot-row span:nth-child(3) { background: #27c93f; }
+
+  .visual-url {
+    flex: 1; background: var(--surface); border-radius: 6px;
+    padding: 4px 10px; font-size: .78rem; color: var(--muted);
+    border: 1px solid var(--border); margin-left: 6px;
+  }
+
+  .visual-body { padding: 1.75rem; display: flex; flex-direction: column; gap: 14px; }
+
+  .search-mock {
+    display: flex; align-items: center; gap: 10px;
+    border: 1.5px solid var(--a1); border-radius: 99px;
+    padding: 11px 20px; background: var(--surface);
+    box-shadow: 0 0 0 4px rgba(26,92,255,.06);
+  }
+  .search-mock-text { font-size: .88rem; color: var(--muted); flex: 1; }
+  .search-mock-btn {
+    background: var(--grad); color: #fff; border: none;
+    border-radius: 99px; padding: 6px 16px;
+    font-size: .8rem; font-weight: 500; cursor: pointer;
+    font-family: 'Sora', sans-serif;
+  }
+
+  .result-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .result-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 13px 15px;
+  }
+
+  .result-tag {
+    display: inline-block; font-size: .7rem; font-weight: 600;
+    padding: 2px 8px; border-radius: 99px; margin-bottom: 6px;
+  }
+  .tag-ifrs  { background: rgba(26,92,255,.1);  color: #1a5cff; }
+  .tag-aspe  { background: rgba(14,165,233,.12); color: #0284c7; }
+  .tag-cpa   { background: rgba(6,182,212,.12);  color: #0891b2; }
+
+  .result-title   { font-size: .85rem; font-weight: 500; margin-bottom: 4px; }
+  .result-snippet { font-size: .77rem; color: var(--muted); line-height: 1.5; }
+
+  /* ── SHARED ── */
+  .section-label {
+    font-size: .75rem; font-weight: 600; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--a1); margin-bottom: .6rem;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.9rem, 4vw, 2.9rem);
+    font-weight: 600; line-height: 1.15; letter-spacing: -.015em;
+    margin-bottom: 1rem;
+  }
+
+  .section-sub { font-size: 1rem; color: var(--muted); max-width: 500px; font-weight: 300; }
+
+  /* ── FEATURES ── */
+  #features { background: var(--bg2); }
+
+  .features-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px; margin-top: 3.5rem;
+  }
+
+  .feat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.75rem;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .feat-card:hover { transform: translateY(-4px); box-shadow: 0 10px 32px rgba(26,92,255,.08); }
+
+  .feat-icon {
+    width: 46px; height: 46px; border-radius: 13px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; margin-bottom: 1rem;
+  }
+  .ic-blue  { background: rgba(26,92,255,.1); }
+  .ic-sky   { background: rgba(14,165,233,.12); }
+  .ic-cyan  { background: rgba(6,182,212,.12); }
+  .ic-navy  { background: rgba(30,58,138,.1); }
+
+  .feat-title { font-size: .95rem; font-weight: 600; margin-bottom: .4rem; }
+  .feat-desc  { font-size: .88rem; color: var(--muted); line-height: 1.65; }
+
+  /* ── HOW IT WORKS ── */
+  .steps-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    margin-top: 3.5rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+  }
+
+  .step {
+    padding: 2rem; border-right: 1px solid var(--border);
+    position: relative;
+  }
+  .step:last-child { border-right: none; }
+
+  .step-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem; font-weight: 400; line-height: 1;
+    background: var(--grad);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; margin-bottom: 1rem;
+  }
+
+  .step-title { font-size: .93rem; font-weight: 600; margin-bottom: .4rem; }
+  .step-desc  { font-size: .86rem; color: var(--muted); line-height: 1.65; }
+
+  /* ── DOWNLOAD ── */
+  #download { background: var(--bg2); }
+
+  .download-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 3rem;
+    display: flex; gap: 3rem; align-items: center; flex-wrap: wrap;
+    position: relative; overflow: hidden;
+  }
+
+  .download-card::before {
+    content: '';
+    position: absolute; top: -60px; right: -60px;
+    width: 280px; height: 280px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(26,92,255,.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .dl-left { flex: 1; min-width: 260px; position: relative; }
+  .dl-right { flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px; position: relative; }
+
+  .crx-mockup {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 14px 18px; min-width: 280px;
+  }
+
+  .crx-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: var(--grad);
+    display: flex; align-items: center; justify-content: center; font-size: 20px;
+    box-shadow: 0 4px 12px rgba(26,92,255,.25);
+  }
+
+  .crx-name  { font-size: .93rem; font-weight: 600; }
+  .crx-stars { font-size: .8rem; color: #f59e0b; }
+  .crx-meta  { font-size: .78rem; color: var(--muted); }
+  .version-badge {
+    font-size: .72rem; font-weight: 600; padding: 2px 8px; border-radius: 4px;
+    background: rgba(26,92,255,.1); color: var(--a1);
+  }
+  .compat-note { font-size: .8rem; color: var(--muted); text-align: center; }
+
+  /* ── PRICING ── */
+  .pricing-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px; margin-top: 3.5rem; align-items: start;
+  }
+
+  .plan-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 2rem;
+    position: relative; transition: transform .2s, box-shadow .2s;
+  }
+  .plan-card:hover { transform: translateY(-4px); box-shadow: 0 10px 32px rgba(26,92,255,.09); }
+
+  .plan-card.featured {
+    border: 2px solid transparent;
+    background: linear-gradient(var(--surface), var(--surface)) padding-box,
+                var(--grad) border-box;
+  }
+
+  .popular-badge {
+    position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+    background: var(--grad); color: #fff;
+    font-size: .72rem; font-weight: 600; padding: 4px 14px;
+    border-radius: 99px; white-space: nowrap;
+    box-shadow: 0 3px 10px rgba(26,92,255,.3);
+  }
+
+  .plan-name   { font-size: .82rem; font-weight: 600; color: var(--muted); margin-bottom: .5rem; letter-spacing:.04em; text-transform: uppercase; }
+  .plan-price  {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem; font-weight: 600; line-height: 1; margin-bottom: .2rem;
+  }
+  .plan-price sup { font-size: 1.3rem; vertical-align: top; margin-top: .5rem; display: inline-block; }
+  .plan-period { font-size: .83rem; color: var(--muted); margin-bottom: 1.5rem; }
+  .plan-divider { height: 1px; background: var(--border); margin-bottom: 1.25rem; }
+
+  .plan-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.75rem; }
+  .plan-features li { display: flex; align-items: flex-start; gap: 8px; font-size: .88rem; }
+  .plan-features li .check { color: var(--a1); font-size: 13px; margin-top: 2px; flex-shrink: 0; }
+  .plan-features li .dim   { color: var(--muted); }
+
+  .plan-btn {
+    display: block; text-align: center; padding: 11px;
+    border-radius: 99px; font-size: .88rem; font-weight: 500;
+    text-decoration: none; transition: .15s;
+    border: 1.5px solid var(--border2); color: var(--text);
+    font-family: 'Sora', sans-serif;
+  }
+  .plan-btn:hover { background: var(--bg2); }
+  .plan-btn.grad  { background: var(--grad); color: #fff; border: none; box-shadow: 0 4px 16px rgba(26,92,255,.25); }
+  .plan-btn.grad:hover { opacity: .88; }
+
+  /* ── ABOUT ── */
+  #about { background: var(--bg2); }
+
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+
+  .about-copy p { color: var(--muted); margin-bottom: 1rem; line-height: 1.8; font-size: .95rem; }
+
+  .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .stat-box {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 1.5rem;
+    transition: transform .2s;
+  }
+  .stat-box:hover { transform: translateY(-2px); }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem; font-weight: 600; line-height: 1;
+    background: var(--grad);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; margin-bottom: 4px;
+  }
+  .stat-label { font-size: .82rem; color: var(--muted); }
+
+  /* ── FAQ ── */
+  .faq-list { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 8px; max-width: 720px; margin-inline: auto; }
+
+  .faq-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); overflow: hidden;
+  }
+
+  .faq-q {
+    width: 100%; display: flex; justify-content: space-between; align-items: center;
+    padding: 1.1rem 1.25rem; background: none; border: none;
+    text-align: left; font-size: .92rem; font-weight: 500; cursor: pointer;
+    color: var(--text); font-family: 'Sora', sans-serif;
+  }
+
+  .faq-arrow { font-size: 18px; color: var(--muted); transition: transform .2s; flex-shrink: 0; }
+  .faq-item.open .faq-arrow { transform: rotate(90deg); color: var(--a1); }
+
+  .faq-a {
+    max-height: 0; overflow: hidden; transition: max-height .25s ease, padding .25s;
+    padding: 0 1.25rem; font-size: .88rem; color: var(--muted); line-height: 1.75;
+  }
+  .faq-item.open .faq-a { max-height: 200px; padding: 0 1.25rem 1.1rem; }
+  .faq-item.open { border-color: rgba(26,92,255,.2); }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2.5rem 2rem;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+  }
+
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem; color: var(--text); text-decoration: none; font-weight: 600;
+  }
+
+  .footer-links { display: flex; gap: 1.5rem; }
+  .footer-links a { font-size: .83rem; color: var(--muted); text-decoration: none; transition: color .15s; }
+  .footer-links a:hover { color: var(--a1); }
+
+  .footer-copy { font-size: .8rem; color: var(--muted); }
+
+  /* ── GRADIENT DIVIDER ── */
+  .grad-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(26,92,255,.3), rgba(6,182,212,.3), transparent);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-up { opacity: 0; transform: translateY(22px); transition: opacity .65s ease, transform .65s ease; }
+  .fade-up.visible { opacity: 1; transform: none; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 700px) {
+    .about-grid     { grid-template-columns: 1fr; gap: 2rem; }
+    .result-cards   { grid-template-columns: 1fr; }
+    .step           { border-right: none; border-bottom: 1px solid var(--border); }
+    .step:last-child{ border-bottom: none; }
+    .download-card  { flex-direction: column; gap: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- DISCLAIMER BANNER -->
+<div style="position:fixed;top:0;left:0;right:0;z-index:200;background:#e8effe;border-bottom:1px solid #c7d4f7;text-align:center;padding:8px 2rem;font-size:.78rem;color:#3a4e7a;line-height:1.5;">
+  ⚠️ <strong>Knotia SearchKit</strong> is an independent third-party Chrome extension and is <strong>not affiliated with, endorsed by, or associated with Knotia or CPA Canada</strong> in any way.
+  This tool is intended <strong>solely for internal use within the MMPA program</strong>.
+  Pricing covers AI API token costs and infrastructure maintenance only — <strong>no profit is made</strong>.
+</div>
+
+<!-- NAV -->
+<nav style="top:37px;">
+  <a class="nav-logo" href="#">
+    <div class="logo-mark" style="font-size:11px;letter-spacing:-.02em;">KS</div>
+    Knotia SearchKit
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how-it-works">How it works</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#download" class="nav-cta">Get Extension</a></li>
+  </ul>
+</nav>
+
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      Third-party extension · MMPA internal use only
+    </div>
+    <h1>Supercharge your search<br>in Knotia <em>with AI</em></h1>
+    <p class="hero-sub">Knotia SearchKit is an independent Chrome extension that brings AI-powered retrieval to IFRS, IAS, ASPE, CAS, CSQM, and PS standards — directly inside the Knotia platform you already use.</p>
+    <div class="hero-actions">
+      <a href="#download" class="btn-primary">⬇ Download Extension</a>
+      <a href="#features" class="btn-secondary">See how it works</a>
+    </div>
+
+    <div class="hero-visual fade-up">
+      <div class="visual-bar">
+        <div class="dot-row"><span></span><span></span><span></span></div>
+        <div class="visual-url">knotia-search · Chrome Extension v5</div>
+      </div>
+      <div class="visual-body" style="padding:0;">
+        <img src="knotia_demo.gif" alt="Knotia Search demo" style="width:100%; display:block; border-radius:0 0 var(--radius) var(--radius);" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="grad-line"></div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="fade-up">
+      <p class="section-label">Features</p>
+      <h2 class="section-title">Built for MMPA students and practitioners</h2>
+      <p class="section-sub">Stop hunting through dense standard text. Knotia SearchKit finds the exact paragraph that answers your question — in seconds.</p>
+    </div>
+    <div class="features-grid fade-up">
+      <div class="feat-card">
+        <div class="feat-icon ic-blue">🔍</div>
+        <div class="feat-title">Two-stage retrieval</div>
+        <div class="feat-desc">BM25 keyword search narrows the corpus, then a cross-encoder reranker surfaces the most semantically relevant paragraphs.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon ic-sky">🤖</div>
+        <div class="feat-title">HyDE expansion</div>
+        <div class="feat-desc">Before searching, the AI generates a hypothetical answer paragraph in standard accounting language — dramatically improving BM25 recall on technical queries.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon ic-cyan">📄</div>
+        <div class="feat-title">Paragraph-level citations</div>
+        <div class="feat-desc">Every answer point links directly to the source paragraph in Knotia — click to scroll and highlight the exact text in the standard.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon ic-navy">🔒</div>
+        <div class="feat-title">No API key needed</div>
+        <div class="feat-desc">Sign in with Google and top up credits. All AI calls are handled server-side — your data never touches a third-party directly from the browser.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="grad-line"></div>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+  <div class="container">
+    <div class="fade-up" style="text-align:center;">
+      <p class="section-label">How it works</p>
+      <h2 class="section-title">From question to answer in seconds</h2>
+    </div>
+    <div class="steps-grid fade-up">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-title">Ask your question</div>
+        <div class="step-desc">Press <kbd style="background:var(--bg2);padding:1px 6px;border-radius:4px;font-size:.8em;">⌘ Shift F</kbd> on any Knotia page to open the search bar. Type your question in plain English.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-title">Auto-navigate + index</div>
+        <div class="step-desc">The AI identifies the relevant standard, navigates the Knotia TOC automatically, and builds a live BM25 index from the page DOM.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-title">HyDE + reranking</div>
+        <div class="step-desc">A hypothetical answer expands your query, BM25 retrieves candidates, then Jina Reranker re-scores by semantic relevance.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-title">Cited answer</div>
+        <div class="step-desc">A plain-English answer appears with paragraph-level citations. Click any point to scroll and highlight the exact source text.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="grad-line"></div>
+
+<!-- DOWNLOAD -->
+<section id="download">
+  <div class="container">
+    <div class="download-card fade-up">
+      <div class="dl-left">
+        <p class="section-label">Download</p>
+        <h2 class="section-title" style="margin-bottom:.75rem;">Get the Chrome extension</h2>
+        <p style="color:var(--muted); font-size:.93rem; line-height:1.8; margin-bottom:1.5rem;">
+          Install Knotia SearchKit as a Chrome extension and get AI-powered search directly inside Knotia — no copy-pasting, no switching tabs. Sign in with Google, top up credits, and start searching. Available for MMPA program members only.
+        </p>
+        <a href="#" class="btn-primary" style="width:fit-content;">⬇ Download Extension</a>
+        <p style="font-size:.78rem; color:var(--muted); margin-top:.75rem;">Chrome Web Store listing coming soon · Manifest V3</p>
+      </div>
+      <div class="dl-right">
+        <div class="crx-mockup">
+          <div class="crx-icon">📘</div>
+          <div style="flex:1;">
+            <div class="crx-name">Knotia SearchKit</div>
+            <div class="crx-stars">★★★★★</div>
+            <div class="crx-meta">Chrome Extension</div>
+          </div>
+          <span class="version-badge">v5</span>
+        </div>
+        <div class="compat-note">Compatible with Chrome 110+ · Manifest V3</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="grad-line"></div>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="container">
+    <div class="fade-up" style="text-align:center;">
+      <p class="section-label">Pricing</p>
+      <h2 class="section-title">Pay only for what you search</h2>
+      <p class="section-sub" style="margin-inline:auto;">No subscription. No profit. Pricing covers AI API tokens and server costs only — $1 CAD = 100 credits.</p>
+    </div>
+    <div class="pricing-grid fade-up">
+
+      <div class="plan-card">
+        <div class="plan-name">Starter</div>
+        <div class="plan-price"><sup>$</sup>5</div>
+        <div class="plan-period">CAD · 500 credits</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> ~200–250 searches</li>
+          <li><span class="check">✓</span> All 6 standard libraries</li>
+          <li><span class="check">✓</span> AI answer generation</li>
+          <li><span class="check">✓</span> Paragraph-level citations</li>
+          <li><span class="check">✓</span> Credits never expire</li>
+        </ul>
+        <a href="#download" class="plan-btn">Get started</a>
+      </div>
+
+      <div class="plan-card featured">
+        <div class="popular-badge">Most popular</div>
+        <div class="plan-name">Standard</div>
+        <div class="plan-price"><sup>$</sup>10</div>
+        <div class="plan-period">CAD · 1,000 credits</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> ~400–500 searches</li>
+          <li><span class="check">✓</span> All 6 standard libraries</li>
+          <li><span class="check">✓</span> AI answer generation</li>
+          <li><span class="check">✓</span> Paragraph-level citations</li>
+          <li><span class="check">✓</span> Credits never expire</li>
+        </ul>
+        <a href="#download" class="plan-btn grad">Top up now</a>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-name">Custom</div>
+        <div class="plan-price" style="font-size:2rem;">Any amount</div>
+        <div class="plan-period">CAD · min. $5</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> Enter any dollar amount</li>
+          <li><span class="check">✓</span> $1 = 100 credits always</li>
+          <li><span class="check">✓</span> All 6 standard libraries</li>
+          <li><span class="check">✓</span> AI answer generation</li>
+          <li><span class="check">✓</span> Credits never expire</li>
+        </ul>
+        <a href="#download" class="plan-btn">Choose amount</a>
+      </div>
+
+    </div>
+    <p style="text-align:center;font-size:.82rem;color:var(--muted);margin-top:1.5rem;">Simple query = 2 credits · Complex query = 2.5 credits · Paid securely via Stripe</p>
+    <p style="text-align:center;font-size:.78rem;color:var(--muted);margin-top:.5rem;max-width:600px;margin-inline:auto;">All fees go directly toward Anthropic AI token costs and Supabase infrastructure. Knotia SearchKit is a non-profit tool for MMPA internal use — no revenue is retained.</p>
+  </div>
+</section>
+
+<div class="grad-line"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid fade-up">
+      <div class="about-copy">
+        <p class="section-label">About</p>
+        <h2 class="section-title">Why Knotia SearchKit exists</h2>
+        <p>Knotia is the authoritative platform for Canadian accounting standards — but its built-in search is frustratingly limited. Ctrl+F only gets you so far when you're looking for a specific paragraph across hundreds of pages of dense standard text.</p>
+        <p>Knotia SearchKit is an independent third-party extension built by Bruce's Toolbox to bring modern AI retrieval — BM25, HyDE expansion, and semantic reranking — directly into the Knotia interface. It is not affiliated with Knotia or CPA Canada in any way. The tool was developed for internal use within the MMPA program.</p>
+        <div style="display:flex; gap:12px; margin-top:1.5rem;">
+          <a href="#download" class="btn-secondary" style="font-size:.88rem; padding:10px 20px;">Get the extension</a>
+        </div>
+      </div>
+      <div class="about-stats">
+        <div class="stat-box">
+          <div class="stat-num">6</div>
+          <div class="stat-label">Standard libraries: IFRS, IAS, ASPE, CAS, CSQM, PS</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">3</div>
+          <div class="stat-label">AI pipeline stages: HyDE · BM25 · Rerank</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">~4s</div>
+          <div class="stat-label">Average end-to-end query time</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">v5</div>
+          <div class="stat-label">Current version · Manifest V3 · Chrome</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="grad-line"></div>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="fade-up" style="text-align:center;">
+      <p class="section-label">FAQ</p>
+      <h2 class="section-title">Common questions</h2>
+    </div>
+    <div class="faq-list fade-up">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What standards are supported?
+          <span class="faq-arrow">›</span>
+        </button>
+        <div class="faq-a">Knotia Search works with all six major libraries available on Knotia: IFRS (IFRS 1–17), IAS (IAS 1–41), ASPE (Sections 1000–3870), CAS / CSAE / CSRE (Canadian Auditing Standards), CSQM (CSQM 1 and 2), and PS (Public Sector Accounting Standards). The extension reads live from the Knotia page you have open — so it always reflects the latest edition available in your Knotia subscription.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Do I need my own API key?
+          <span class="faq-arrow">›</span>
+        </button>
+        <div class="faq-a">No. Sign in with your Google account and top up credits. All AI calls (HyDE expansion, reranking, answer generation) are handled server-side by Bruce's Toolbox. You never need to create an Anthropic or Jina account.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Is my data sent to any third-party servers?
+          <span class="faq-arrow">›</span>
+        </button>
+        <div class="faq-a">Your search query and the relevant paragraph text from Knotia are sent to our Supabase backend, which then calls Anthropic and Jina APIs server-side. No query data is stored beyond what is needed for billing (credit deduction). Your Knotia login credentials are never accessed by the extension.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How do credits work?
+          <span class="faq-arrow">›</span>
+        </button>
+        <div class="faq-a">1 credit = $0.01 CAD. A simple query costs 2 credits (~$0.02); a complex multi-part question costs 2.5 credits (~$0.025). Credits are deducted only when a search completes successfully — if an error occurs, you are not charged. Credits never expire.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Do I need a Knotia subscription?
+          <span class="faq-arrow">›</span>
+        </button>
+        <div class="faq-a">Yes. Knotia Search is a Chrome extension that enhances the Knotia platform — it reads the standard text directly from the Knotia page you are viewing. You need an active Knotia subscription (individual or through your institution) to access the standard content.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How do I open the search bar?
+          <span class="faq-arrow">›</span>
+        </button>
+        <div class="faq-a">Press ⌘ Shift F (Mac) or Ctrl Shift F (Windows) on any Knotia page. You can also click the Knotia Search icon in your Chrome toolbar. The shortcut can be customized at chrome://extensions/shortcuts.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer>
+  <a class="footer-logo" href="#">Knotia SearchKit</a>
+  <div class="footer-links">
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#about">About</a>
+    <a href="#download">Download</a>
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+  </div>
+  <span class="footer-copy">© 2026 Bruce's Toolbox. All rights reserved.</span>
+</footer>
+
+
+<script>
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
